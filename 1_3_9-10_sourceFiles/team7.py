@@ -1,3 +1,6 @@
+from __future__ import print_function
+import random
+
 ####
 # Each team's file must define four tokens:
 #     team_name: a string
@@ -6,29 +9,54 @@
 #     move: A function that returns 'c' or 'b'
 ####
 
-team_name = 'The name the team gives to itself' # Only 10 chars displayed.
-strategy_name = 'The name the team gives to this strategy'
-strategy_description = 'How does this strategy decide?'
+team_name = 'Mr McD\'s Revenge' # Only 10 chars displayed.
+strategy_name = 'Betray probe, betray if behind or >5% betray'
+strategy_description = 'Probe the first 10 rounds with random choices. Use this information to determine the percentage of betrays continuosly.  If betray more than 5% of the time, betray.  If I fall behind more than 250 pts, betray.'
     
-def move(my_history, their_history, my_score, their_score):
+def move(my_history, their_history, my_score, their_score): #do not touch this row
     ''' Arguments accepted: my_history, their_history are strings.
     my_score, their_score are ints.
     
     Make my move.
     Returns 'c' or 'b'. 
+    This strategy will probe the first 10 rounds with betrays to see how the
+    opponent reacts.  Use this information to determine the percentage of 
+    betrays continuosly.  If betray more than 5% of the time, betray.  
+    If I fall behind more than 250 pts, betray.'
     '''
+    
+    betrays = 0.
+    colludes = 0.
+    errors = 0.
 
-    # my_history: a string with one letter (c or b) per round that has been played with this opponent.
-    # their_history: a string of the same length as history, possibly empty. 
-    # The first round between these two players is my_history[0] and their_history[0].
-    # The most recent round is my_history[-1] and their_history[-1].
-    
-    # Analyze my_history and their_history and/or my_score and their_score.
-    # Decide whether to return 'c' or 'b'.
-    
-    return 'c'
+    for item in their_history: #examine their entire history
+        if item == 'b': #count all betrays
+            betrays += 1
+        elif item == 'c': #count all colludes
+            colludes += 1
+        else: #count errors (if any, hopefully not)
+            errors += 1
 
+    if(len(their_history)>0): #avoid divide by zero error
+        betrayal_percentage = betrays/(len(their_history))
+    else:
+        betrayal_percentage = 0.
+        #print('betrayal_percentage: ', str(betrayal_percentage))
     
+    if(len(my_history)<10): #random betray or collude for first 10
+        #print('random choice')
+        return('b') #probe with betray to see how they react
+    elif their_score >= (my_score + 250):
+        #print('betray due to score - their_score: ', str(their_score), ', my_score: ', str(my_score))
+        return 'b'
+    elif betrayal_percentage > .05:
+        #print('betray due to percentage')
+        return 'b'
+    else:
+        #sprint('otherwise collude')
+        return 'c'
+
+  
 def test_move(my_history, their_history, my_score, their_score, result):
     '''calls move(my_history, their_history, my_score, their_score)
     from this module. Prints error if return value != result.
@@ -53,7 +81,7 @@ if __name__ == '__main__':
               my_score=0,
               their_score=0,
               result='b'):
-         print 'Test passed'
+         print('Test passed')
      # Test 2: Continue betraying if they collude despite being betrayed.
     test_move(my_history='bbb',
               their_history='ccc', 
@@ -65,4 +93,4 @@ if __name__ == '__main__':
               # move('bbb', 'ccc', 0, 0) returns 'b'.
               my_score=0, 
               their_score=0,
-              result='b')             
+              result='b')           
