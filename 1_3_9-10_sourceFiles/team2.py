@@ -26,43 +26,89 @@ def move(my_history, their_history, my_score, their_score):
     # Analyze my_history and their_history and/or my_score and their_score.
     # Decide whether to return 'c' or 'b'.
     
-    return 'c'
+    
 
     
-def test_move(my_history, their_history, my_score, their_score, result):
-    '''calls move(my_history, their_history, my_score, their_score)
-    from this module. Prints error if return value != result.
-    Returns True or False, dpending on whether result was as expected.
-    '''
-    real_result = move(my_history, their_history, my_score, their_score)
-    if real_result == result:
-        return True
-    else:
-        print("move(" +
-            ", ".join(["'"+my_history+"'", "'"+their_history+"'",
-                       str(my_score), str(their_score)])+
-            ") returned " + "'" + real_result + "'" +
-            " and should have returned '" + result + "'")
-        return False
+# If the other player has betrayed within last 6 rounds, 
 
-if __name__ == '__main__':
-     
-    # Test 1: Betray on first move.
-    if test_move(my_history='',
-              their_history='', 
-              my_score=0,
-              their_score=0,
-              result='b'):
-         print 'Test passed'
-     # Test 2: Continue betraying if they collude despite being betrayed.
-    test_move(my_history='bbb',
-              their_history='ccc', 
-              # Note the scores are for testing move().
-              # The history and scores don't need to match unless
-              # that is relevant to the test of move(). Here,
-              # the simulation (if working correctly) would have awarded 
-              # 300 to me and -750 to them. This test will pass if and only if
-              # move('bbb', 'ccc', 0, 0) returns 'b'.
-              my_score=0, 
-              their_score=0,
-              result='b')             
+#if there history is bbbbb
+
+ # Betray 25%. 
+
+#return c 
+
+ #if my history is ccccc
+
+#return betray
+
+#if there history is ccc
+
+# return betray
+#if there history is bbb
+# return c
+
+ # Betray 25% if b isnt in there last six moves
+
+#first round return 'c'
+
+#if we both put c
+
+#return c
+
+#if they have more b than c return b
+
+def test_move(my_history, their_history, my_score, their_score, result):
+
+    '''calls move(my_history, their_history, my_score, their_score)
+
+    from this module. Prints error if return value != result.
+
+    Returns True or False, dpending on whether result was as expected.
+
+    '''
+
+    if 'b' in their_history[-6:]: # If the other player has betrayed within last 6 rounds, 
+
+        return 'b'<0.25               # Betray 25%. 
+
+    if my_history[-5:] == 'bbbbb': #if there history is bbbbb
+
+        return 'c' #return collude 
+
+       
+
+        if my_history[-5:] == 'ccccc': #if my history is ccccc
+
+         return 'b'       #return betray
+
+        if their_history[-3:] == 'ccc':     #if there history is ccc
+
+            return 'b' # return betray
+
+             
+
+    if their_history[-3:] == 'bbb': #if there history is bbb
+
+            return 'c' # return conclud
+
+            
+
+            if len(their_histroy)==0:         #first round
+
+                return 'c' #return 'c'
+    elif their_history[-1]=='c' and my_history[-1]=='c': #if we both put c
+
+        return 'c' #return c
+
+    elif 'b' > 'c' in their_history: #if their are more b than c 
+
+        return 'b' #return b
+
+    else:
+
+        if random.random()<0.25: # 25% of the other rounds
+
+            return 'b'         # Betray 
+        
+    
+                
